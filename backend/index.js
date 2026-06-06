@@ -1,4 +1,3 @@
-
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -10,22 +9,22 @@ import postRouter from "./routes/post.route.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
+console.log("✅ User routes loading...");
 app.use("/api/users", userRouter);
+
+console.log("✅ Post routes loading...");
 app.use("/api/posts", postRouter);
 
-// Test Route
 app.get("/", (req, res) => {
   res.send("Social Media API Running...");
 });
 
-// MongoDB Connection
+const PORT = process.env.PORT || 3001;
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
