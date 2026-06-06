@@ -27,7 +27,7 @@ const Home = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3001/api/posts",
+        "https://own-web-main.onrender.com/api/posts",
         {
           user: userId,
           text: data.text,
@@ -53,7 +53,7 @@ const Home = () => {
   const getPosts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/posts"
+        "https://own-web-main.onrender.com/api/posts"
       );
 
       setPosts(response.data.posts || []);
@@ -69,7 +69,7 @@ const Home = () => {
       const userId = localStorage.getItem("userId");
 
       await axios.post(
-        `http://localhost:3001/api/posts/${postId}/like`,
+        `https://own-web-main.onrender.com/api/posts/${postId}/like`,
         {
           userId,
         }
@@ -78,6 +78,7 @@ const Home = () => {
       getPosts();
     } catch (error) {
       console.error(error);
+      toast.error("Failed to like post");
     }
   };
 
@@ -93,7 +94,7 @@ const Home = () => {
       }
 
       await axios.post(
-        `http://localhost:3001/api/posts/${postId}/comment`,
+        `https://own-web-main.onrender.com/api/posts/${postId}/comment`,
         {
           userId,
           text,
@@ -126,7 +127,7 @@ const Home = () => {
       if (!confirmDelete) return;
 
       const response = await axios.delete(
-        `http://localhost:3001/api/posts/${postId}`,
+        `https://own-web-main.onrender.com/api/posts/${postId}`,
         {
           data: {
             userId,
@@ -161,28 +162,13 @@ const Home = () => {
         <textarea
           placeholder="What's on your mind?"
           {...register("text")}
-          style={{
-            width: "100%",
-            minHeight: "100px",
-            padding: "10px",
-          }}
         />
-
-        <br />
-        <br />
 
         <input
           type="text"
           placeholder="Image URL"
           {...register("image")}
-          style={{
-            width: "100%",
-            padding: "10px",
-          }}
         />
-
-        <br />
-        <br />
 
         <button type="submit">
           Create Post
@@ -199,44 +185,38 @@ const Home = () => {
         posts.map((post) => (
           <div
             key={post._id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "15px",
-              marginBottom: "20px",
-              borderRadius: "10px",
-              background: "#fff",
-            }}
+            className="post-card"
           >
-            <h3>
-              {post.user?.name ||
-                "Unknown User"}
-            </h3>
+            <div className="post-header">
+              <div className="avatar">
+                {post.user?.name
+                  ?.charAt(0)
+                  ?.toUpperCase() || "U"}
+              </div>
 
-            {post.text && (
-              <p>{post.text}</p>
-            )}
+              <div className="username">
+                {post.user?.name ||
+                  "Unknown User"}
+              </div>
+            </div>
+
+            <div className="post-content">
+              {post.text && (
+                <p>{post.text}</p>
+              )}
+            </div>
 
             {post.image && (
               <img
                 src={post.image}
                 alt="post"
-                style={{
-                  width: "100%",
-                  maxWidth: "500px",
-                  borderRadius: "10px",
-                }}
+                className="post-image"
               />
             )}
 
-            <div
-              style={{
-                marginTop: "15px",
-                display: "flex",
-                gap: "10px",
-                alignItems: "center",
-              }}
-            >
+            <div className="post-actions">
               <button
+                className="like-btn"
                 onClick={() =>
                   handleLike(post._id)
                 }
@@ -245,7 +225,7 @@ const Home = () => {
                 {post.likes?.length || 0})
               </button>
 
-              <span>
+              <span className="comment-count">
                 💬 Comments (
                 {post.comments?.length ||
                   0}
@@ -256,104 +236,80 @@ const Home = () => {
                 "userId"
               ) === post.user?._id && (
                 <button
+                  className="delete-btn"
                   onClick={() =>
                     handleDelete(post._id)
                   }
-                  style={{
-                    background: "red",
-                    color: "white",
-                    border: "none",
-                    padding:
-                      "8px 12px",
-                    borderRadius:
-                      "5px",
-                    cursor: "pointer",
-                  }}
                 >
                   🗑 Delete
                 </button>
               )}
             </div>
 
-            <div
-              style={{
-                marginTop: "15px",
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Write comment..."
-                value={
-                  commentText[
-                    post._id
-                  ] || ""
-                }
-                onChange={(e) =>
-                  setCommentText(
-                    (prev) => ({
-                      ...prev,
-                      [post._id]:
-                        e.target.value,
-                    })
-                  )
-                }
-                style={{
-                  padding: "8px",
-                  width: "70%",
-                }}
-              />
+            <div className="comment-box">
+              <div className="comment-input-area">
+                <input
+                  type="text"
+                  placeholder="Write comment..."
+                  className="comment-input"
+                  value={
+                    commentText[
+                      post._id
+                    ] || ""
+                  }
+                  onChange={(e) =>
+                    setCommentText(
+                      (prev) => ({
+                        ...prev,
+                        [post._id]:
+                          e.target.value,
+                      })
+                    )
+                  }
+                />
 
-              <button
-                onClick={() =>
-                  handleComment(
-                    post._id
-                  )
-                }
-                style={{
-                  marginLeft:
-                    "10px",
-                }}
-              >
-                Add Comment
-              </button>
-            </div>
+                <button
+                  className="comment-btn"
+                  onClick={() =>
+                    handleComment(
+                      post._id
+                    )
+                  }
+                >
+                  Add Comment
+                </button>
+              </div>
 
-            <div
-              style={{
-                marginTop: "15px",
-              }}
-            >
-              <h4>Comments</h4>
+              <div className="comments-list">
+                <h4>Comments</h4>
 
-              {post.comments?.length >
-              0 ? (
-                post.comments.map(
-                  (
-                    comment,
-                    index
-                  ) => (
-                    <div
-                      key={index}
-                      style={{
-                        marginBottom:
-                          "5px",
-                      }}
-                    >
-                      <strong>
-                        {comment.user
-                          ?.name ||
-                          "User"}
-                        :
-                      </strong>{" "}
-                      {comment.text}
-                    </div>
+                {post.comments?.length >
+                0 ? (
+                  post.comments.map(
+                    (
+                      comment,
+                      index
+                    ) => (
+                      <div
+                        key={index}
+                        className="comment"
+                      >
+                        <strong>
+                          {comment.user
+                            ?.name ||
+                            "User"}
+                          :
+                        </strong>{" "}
+                        {comment.text}
+                      </div>
+                    )
                   )
-                )
-              ) : (
-                <p>
-                  No comments yet
-                </p>
-              )}
+                ) : (
+                  <p>
+                    No comments yet
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         ))

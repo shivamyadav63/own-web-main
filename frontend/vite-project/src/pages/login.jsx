@@ -17,11 +17,12 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        "http://localhost:3001/api/users/login",
+        "https://own-web-main.onrender.com/api/users/login",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify(data),
         }
@@ -29,24 +30,39 @@ const Login = () => {
 
       const result = await response.json();
 
-      console.log("Login Response:", result);
-
-      if (!response.ok || !result.success) {
-        toast.error(result.message || "Login Failed");
+      if (
+        !response.ok ||
+        !result.success
+      ) {
+        toast.error(
+          result.message ||
+            "Login Failed"
+        );
         return;
       }
 
-      // Save User Data
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("userId", result.user._id);
-      localStorage.setItem("loggedInUser", result.user.name);
+      localStorage.setItem(
+        "token",
+        result.token
+      );
 
-      toast.success("Login Successful");
+      localStorage.setItem(
+        "userId",
+        result.user._id
+      );
+
+      localStorage.setItem(
+        "loggedInUser",
+        result.user.name
+      );
+
+      toast.success(
+        "Login Successful"
+      );
 
       setTimeout(() => {
         navigate("/home");
       }, 1000);
-
     } catch (error) {
       console.error(error);
       toast.error("Server Error");
@@ -56,12 +72,15 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-
-        <h1 className="login-title">Login</h1>
+        <h1 className="login-title">
+          Login
+        </h1>
 
         <form
           className="login-form"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(
+            onSubmit
+          )}
         >
           <label>Email</label>
 
@@ -70,13 +89,17 @@ const Login = () => {
             placeholder="Enter Email"
             className="login-input"
             {...register("email", {
-              required: "Email is required",
+              required:
+                "Email is required",
             })}
           />
 
           {errors.email && (
             <p className="error">
-              {errors.email.message}
+              {
+                errors.email
+                  .message
+              }
             </p>
           )}
 
@@ -86,14 +109,21 @@ const Login = () => {
             type="password"
             placeholder="Enter Password"
             className="login-input"
-            {...register("password", {
-              required: "Password is required",
-            })}
+            {...register(
+              "password",
+              {
+                required:
+                  "Password is required",
+              }
+            )}
           />
 
           {errors.password && (
             <p className="error">
-              {errors.password.message}
+              {
+                errors.password
+                  .message
+              }
             </p>
           )}
 
@@ -106,7 +136,9 @@ const Login = () => {
 
           <p className="login-link">
             Don't have an account?{" "}
-            <Link to="/signup">Signup</Link>
+            <Link to="/signup">
+              Signup
+            </Link>
           </p>
         </form>
 
